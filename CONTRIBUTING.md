@@ -72,6 +72,31 @@ $ make bootstrap
 The bootstrap command assumes you have a running postgres server. It will create a database called `empire`
 using the postgres client connection defaults.
 
+The connection defaults assume your postgres server has a user for your current `$USER` username,
+and that this user is allowed to connect (from localhost) without a password, e.g. with `trust`
+or `ident` access.
+
+You can test this by running: `psql -h localhost -w postgres`. If this does not work, then you can try something like:
+
+* Add your user to postgres:
+
+  `sudo -u postgres psql`
+  `CREATE USER username WITH SUPERUSER;`
+  
+  Where `username` is your `$USER` username
+  
+* Ensure password-less access from localhost is allowed:
+
+  Edit `pg_hba.conf` and add a line like:
+  
+  `host    all             all             127.0.0.1/32            trust`
+  
+  There may be an existing line with `md5`, you can change this to `trust`.
+  
+  Restart the postgres server.
+
+* Verify that `psql -h localhost -w postgres` should now work
+
 To run the tests:
 
 ```console
